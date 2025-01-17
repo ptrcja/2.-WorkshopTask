@@ -20,5 +20,7 @@ Feature: Purchase Hummingbird Printed Sweater
 
     | email |       password | size | quantity |
     |bla@gmail.com| blabla123| M    |  5       |
+    |bla@gmail.com| blabla123| L    |  3       |
+    |bla@gmail.com| blabla123| XL   |  2       |
 
 

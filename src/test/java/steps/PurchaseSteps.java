@@ -65,8 +65,7 @@ public class PurchaseSteps {
         @And("the user goes to checkout")
     public void theUserGoesToCheckout() {
        System.out.println("DEBUG: Starting checkout process");
-        productPage.proceedToCheckout();
-        //handle the cart page
+       productPage.proceedToCheckout();
        shoppingCartPage.proceedToCheckout();
        System.out.println("DEBUG: Completed cart page checkout");
     }

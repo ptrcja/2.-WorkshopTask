@@ -49,19 +49,29 @@ public class ProductPage {
         Select sizeSelect = new Select(sizeDropdown);
         sizeSelect.selectByVisibleText(size);
     }
-
-    public void setQuantity(int quantity) {
+    public void setQuantity(int targetQuantity) {
         try {
-            System.out.println("DEBUG: Attempting to set quantity to " + quantity);
-            WebElement qtyInput = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.id("quantity_wanted")
-            ));
-            qtyInput.clear();
-            Thread.sleep(500);
-            qtyInput.sendKeys(String.valueOf(quantity));
-            System.out.println("DEBUG: Successfully set quantity to " + quantity);
+            System.out.println("DEBUG: Attempting to set quantity to " + targetQuantity);
+            // Wait for the increment button to be clickable
+            WebElement incrementButton = wait.until(ExpectedConditions
+                    .elementToBeClickable(By.cssSelector("button.bootstrap-touchspin-up")));
+
+            // Get current quantity
+            int clicksNeeded = targetQuantity;
+            for (int i = 0; i < clicksNeeded; i++) {
+                incrementButton.click();
+                // Small wait to ensure click is registered
+               Thread.sleep(200);
+            }
+
+            // Verify final quantity
+            WebElement qtyInput = driver.findElement(By.id("quantity_wanted"));
+            String finalQuantity = qtyInput.getAttribute("value");
+            System.out.println("DEBUG: Final quantity set to: " + finalQuantity);
+
         } catch (Exception e) {
             System.out.println("DEBUG: Error setting quantity: " + e.getMessage());
+            throw new RuntimeException("Error setting quantity: " + e.getMessage());
         }
     }
 
@@ -111,8 +121,6 @@ public class ProductPage {
         }
     }
 }
-
-
 
 
 
