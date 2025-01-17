@@ -25,9 +25,8 @@ public class ShoppingCartPage {
     }
 
     public void proceedToCheckout() {
-        System.out.println("DEBUG: On cart page, proceeding to checkout");
         wait.until(ExpectedConditions.elementToBeClickable(proceedToCheckoutButton)).click();
-        System.out.println("DEBUG: Clicked cart page checkout button");
+
     }
 
     public String getTotalAmount() {
