@@ -37,26 +37,27 @@ public class CheckoutPage {
             PageFactory.initElements(driver, this);
         }
 
-        public void confirmAddress() {
-            System.out.println("DEBUG: Starting address confirmation");
-            try {
-                // Wait for the address section to be visible
-                wait.until(ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector("div.checkout-step.-current.-reachable.-complete")
-                ));
 
-                // Click continue button
-                WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("button.continue[name='confirm-addresses']")
-                ));
-                continueBtn.click();
-                System.out.println("DEBUG: Successfully confirmed address");
-            } catch (Exception e) {
-                System.out.println("DEBUG: Failed to confirm address: " + e.getMessage());
-                System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
-                throw e;
-            }
-        }
+          public void confirmAddress() {
+              System.out.println("DEBUG: Starting address confirmation");
+              try {
+                  // Wait for the address form to be present first
+                  wait.until(ExpectedConditions.presenceOfElementLocated(
+                          By.cssSelector(".js-address-form")
+                  ));
+
+                  // Click continue button using a more specific selector
+                  WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                          By.cssSelector("button[name='confirm-addresses']")
+                  ));
+                  continueBtn.click();
+                  System.out.println("DEBUG: Successfully confirmed address");
+              } catch (Exception e) {
+                  System.out.println("DEBUG: Failed to confirm address: " + e.getMessage());
+                  System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+                  throw e;
+              }
+          }
 
         public void selectPickupMethod(String method) {
             wait.until(ExpectedConditions.elementToBeClickable(pickupInStoreOption)).click();

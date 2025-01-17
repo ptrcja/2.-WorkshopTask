@@ -26,11 +26,9 @@ public class ProductPage {
     @FindBy(css = ".add-to-cart")
     private WebElement addToCartButton;
 
-    @FindBy(css = ".cart-content-btn a.btn-primary")
+    // Modal checkout button
+    @FindBy(css = "div.cart-content-btn a.btn-primary")
     private WebElement modalCheckoutButton;
-
-    @FindBy(css = "a.btn-primary[href$='order']")
-    private WebElement cartPageCheckoutButton;
 
     public ProductPage(WebDriver driver) {
         this.driver = driver;
@@ -55,64 +53,335 @@ public class ProductPage {
     public void setQuantity(int quantity) {
         try {
             System.out.println("DEBUG: Attempting to set quantity to " + quantity);
-
-            // Wait for quantity input and interact with it
             WebElement qtyInput = wait.until(ExpectedConditions.elementToBeClickable(
                     By.id("quantity_wanted")
             ));
-
-            // Clear the existing value
             qtyInput.clear();
-
-            // Add a small wait after clearing
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Enter the new value
+            Thread.sleep(500);
             qtyInput.sendKeys(String.valueOf(quantity));
-
             System.out.println("DEBUG: Successfully set quantity to " + quantity);
         } catch (Exception e) {
             System.out.println("DEBUG: Error setting quantity: " + e.getMessage());
-            throw e;
         }
     }
 
     public void addToCart() {
-        System.out.println("DEBUG: Adding to cart");
-        wait.until(ExpectedConditions.elementToBeClickable(addToCartButton)).click();
+        try {
+            System.out.println("DEBUG: Attempting to add to cart");
+            wait.until(ExpectedConditions.elementToBeClickable(addToCartButton)).click();
+            System.out.println("DEBUG: Add to cart button clicked");
 
-        // Wait for modal to appear
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector(".modal-content")
-        ));
-        System.out.println("DEBUG: Product added to cart");
+            // Wait for modal
+            System.out.println("DEBUG: Waiting for modal");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector("div.cart-content-btn")
+            ));
+            System.out.println("DEBUG: Modal appeared");
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error adding to cart: " + e.getMessage());
+            throw e;
+        }
     }
 
     public void proceedToCheckout() {
         try {
             System.out.println("DEBUG: Starting checkout process");
+            System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
 
-            // Wait for and click the modal checkout button
-            wait.until(ExpectedConditions.elementToBeClickable(modalCheckoutButton)).click();
+            // Click the modal's PROCEED TO CHECKOUT button
+            WebElement modalButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("div.cart-content-btn a.btn-primary[href*='controller=cart']")
+            ));
+            modalButton.click();
             System.out.println("DEBUG: Clicked modal checkout button");
-
-            // Wait for and click the cart page checkout button
-            wait.until(ExpectedConditions.elementToBeClickable(cartPageCheckoutButton)).click();
-            System.out.println("DEBUG: Clicked cart page checkout button");
 
         } catch (Exception e) {
             System.out.println("DEBUG: Error during checkout: " + e.getMessage());
             System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+            try {
+                System.out.println("DEBUG: Available buttons on page:");
+                driver.findElements(By.cssSelector("a.btn-primary")).forEach(button -> {
+                    System.out.println("Button text: " + button.getText());
+                    System.out.println("Button href: " + button.getAttribute("href"));
+                });
+            } catch (Exception ex) {
+                System.out.println("DEBUG: Error while listing buttons: " + ex.getMessage());
+            }
             throw e;
         }
     }
 }
 
 
+
+
+//import org.openqa.selenium.WebDriver;
+//import org.openqa.selenium.WebElement;
+//import org.openqa.selenium.support.FindBy;
+//import org.openqa.selenium.support.PageFactory;
+//import org.openqa.selenium.support.ui.Select;
+//import org.openqa.selenium.support.ui.WebDriverWait;
+//import org.openqa.selenium.support.ui.ExpectedConditions;
+//import java.time.Duration;
+//import org.openqa.selenium.By;
+//
+//public class ProductPage {
+//    private WebDriver driver;
+//    private WebDriverWait wait;
+//
+//    @FindBy(css = "select[name='group[1]']")
+//    private WebElement sizeDropdown;
+//
+//    @FindBy(id = "quantity_wanted")
+//    private WebElement quantityInput;
+//
+//    @FindBy(css = ".discount-percentage")
+//    private WebElement discountPercentage;
+//
+//    @FindBy(css = ".add-to-cart")
+//    private WebElement addToCartButton;
+//
+//     Updated modal elements based on the actual page structure
+//    @FindBy(css = "div.modal-dialog .cart-content-btn a.btn-primary")
+//    private WebElement modalCheckoutButton;
+//
+//    @FindBy(css = "a.btn-primary[href*='controller=order']")
+//    private WebElement cartPageCheckoutButton;
+//
+//    public ProductPage(WebDriver driver) {
+//        this.driver = driver;
+//        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//        PageFactory.initElements(driver, this);
+//    }
+//
+//    public void verifyDiscount(int expectedDiscount) {
+//        wait.until(ExpectedConditions.visibilityOf(discountPercentage));
+//        String discountText = discountPercentage.getText();
+//        int actualDiscount = Integer.parseInt(discountText.replaceAll("[^0-9]", ""));
+//        assert actualDiscount == expectedDiscount :
+//                "Expected discount: " + expectedDiscount + "% but found: " + actualDiscount + "%";
+//    }
+//
+//    public void selectSize(String size) {
+//        wait.until(ExpectedConditions.elementToBeClickable(sizeDropdown));
+//        Select sizeSelect = new Select(sizeDropdown);
+//        sizeSelect.selectByVisibleText(size);
+//    }
+//
+//    public void setQuantity(int quantity) {
+//        try {
+//            System.out.println("DEBUG: Attempting to set quantity to " + quantity);
+//            WebElement qtyInput = wait.until(ExpectedConditions.elementToBeClickable(
+//                    By.id("quantity_wanted")
+//            ));
+//            qtyInput.clear();
+//            Thread.sleep(500); // Small wait after clearing
+//            qtyInput.sendKeys(String.valueOf(quantity));
+//            System.out.println("DEBUG: Successfully set quantity to " + quantity);
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error setting quantity: " + e.getMessage());
+//
+//        }
+//    }
+//
+//    public void addToCart() {
+//        try {
+//            System.out.println("DEBUG: Attempting to add to cart");
+//            wait.until(ExpectedConditions.elementToBeClickable(addToCartButton)).click();
+//
+//             Wait for the modal to appear
+//            WebElement modalCheckoutButton = wait.until(ExpectedConditions.elementToBeClickable(
+//                    By.cssSelector("div.modal-dialog .cart-content-btn a.btn-primary")
+//            ));
+//            modalCheckoutButton.click();
+//            System.out.println("DEBUG: Clicked modal checkout button");
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error adding to cart: " + e.getMessage());
+//            System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+//            throw e;
+//        }
+//    }
+//    public void addToCart() {
+//        try {
+//            System.out.println("DEBUG: Attempting to add to cart");
+//            wait.until(ExpectedConditions.elementToBeClickable(addToCartButton)).click();
+//
+//             Wait for the modal to appear
+//            wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                    By.cssSelector("div.modal-dialog")
+//            ));
+//            System.out.println("DEBUG: Product added to cart and modal appeared");
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error adding to cart: " + e.getMessage());
+//            System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+//            throw e;
+//        }
+//    }
+
+//    public void proceedToCheckout() {
+//        try {
+//            System.out.println("DEBUG: Starting checkout process");
+//
+//             Wait for and click the checkout button in modal
+//            WebElement modalCheckoutButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.modal-dialog .cart-content-btn a.btn-primary")
+//            ));
+//            modalCheckoutButton.click();
+//            System.out.println("DEBUG: Clicked modal checkout button");
+//
+//             Wait for and click the cart page checkout button
+//            WebElement cartPageCheckoutButton = wait.until(ExpectedConditions.elementToBeClickable(
+//                    By.cssSelector("div.cart-detailed-actions a.btn-primary")
+//            ));
+//            cartPageCheckoutButton.click();
+//            System.out.println("DEBUG: Clicked cart page checkout button");
+//
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error during checkout: " + e.getMessage());
+//            System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+//            throw e;
+//        }
+//    }
+//}
+//    public void proceedToCheckout() {
+//        try {
+//            System.out.println("DEBUG: Starting checkout process");
+//
+//             Wait for and click the checkout button in modal
+//            wait.until(ExpectedConditions.elementToBeClickable(
+//                    By.cssSelector("div.modal-dialog a.btn-primary")
+//            )).click();
+//            System.out.println("DEBUG: Clicked modal checkout button");
+//
+//             Wait for and click the cart page checkout button
+//            wait.until(ExpectedConditions.elementToBeClickable(
+//                    By.cssSelector("div.cart-detailed-actions a.btn-primary")
+//            )).click();
+//            System.out.println("DEBUG: Clicked cart page checkout button");
+//
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error during checkout: " + e.getMessage());
+//            System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+//            throw e;
+//        }
+//    }
+//}
+
+
+
+
+
+//Third version
+//import org.openqa.selenium.WebDriver;
+//import org.openqa.selenium.WebElement;
+//import org.openqa.selenium.support.FindBy;
+//import org.openqa.selenium.support.PageFactory;
+//import org.openqa.selenium.support.ui.Select;
+//import org.openqa.selenium.support.ui.WebDriverWait;
+//import org.openqa.selenium.support.ui.ExpectedConditions;
+//import java.time.Duration;
+//import org.openqa.selenium.By;
+//
+//public class ProductPage {
+//    private WebDriver driver;
+//    private WebDriverWait wait;
+//
+//    @FindBy(css = "select[name='group[1]']")
+//    private WebElement sizeDropdown;
+//
+//    @FindBy(id = "quantity_wanted")
+//    private WebElement quantityInput;
+//
+//    @FindBy(css = ".discount-percentage")
+//    private WebElement discountPercentage;
+//
+//    @FindBy(css = ".add-to-cart")
+//    private WebElement addToCartButton;
+//
+//    @FindBy(css = ".cart-content-btn a.btn-primary")
+//    private WebElement modalCheckoutButton;
+//
+//    @FindBy(css = "a.btn-primary[href$='order']")
+//    private WebElement cartPageCheckoutButton;
+//
+//    public ProductPage(WebDriver driver) {
+//        this.driver = driver;
+//        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//        PageFactory.initElements(driver, this);
+//    }
+//
+//    public void verifyDiscount(int expectedDiscount) {
+//        wait.until(ExpectedConditions.visibilityOf(discountPercentage));
+//        String discountText = discountPercentage.getText();
+//        int actualDiscount = Integer.parseInt(discountText.replaceAll("[^0-9]", ""));
+//        assert actualDiscount == expectedDiscount :
+//                "Expected discount: " + expectedDiscount + "% but found: " + actualDiscount + "%";
+//    }
+//
+//    public void selectSize(String size) {
+//        wait.until(ExpectedConditions.elementToBeClickable(sizeDropdown));
+//        Select sizeSelect = new Select(sizeDropdown);
+//        sizeSelect.selectByVisibleText(size);
+//    }
+//
+//    public void setQuantity(int quantity) {
+//        try {
+//            System.out.println("DEBUG: Attempting to set quantity to " + quantity);
+//
+//             Wait for quantity input and interact with it
+//            WebElement qtyInput = wait.until(ExpectedConditions.elementToBeClickable(
+//                    By.id("quantity_wanted")
+//            ));
+//
+//             Clear the existing value
+//            qtyInput.clear();
+//
+//             Add a small wait after clearing
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//             Enter the new value
+//            qtyInput.sendKeys(String.valueOf(quantity));
+//
+//            System.out.println("DEBUG: Successfully set quantity to " + quantity);
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error setting quantity: " + e.getMessage());
+//            throw e;
+//        }
+//    }
+//
+//    public void addToCart() {
+//        System.out.println("DEBUG: Adding to cart");
+//        wait.until(ExpectedConditions.elementToBeClickable(addToCartButton)).click();
+//
+//         Wait for modal to appear
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                By.cssSelector(".modal-content")
+//        ));
+//        System.out.println("DEBUG: Product added to cart");
+//    }
+//
+//    public void proceedToCheckout() {
+//        try {
+//            System.out.println("DEBUG: Starting checkout process");
+//
+//             Wait for and click the modal checkout button
+//            wait.until(ExpectedConditions.elementToBeClickable(modalCheckoutButton)).click();
+//            System.out.println("DEBUG: Clicked modal checkout button");
+//
+//             Wait for and click the cart page checkout button
+//            wait.until(ExpectedConditions.elementToBeClickable(cartPageCheckoutButton)).click();
+//            System.out.println("DEBUG: Clicked cart page checkout button");
+//
+//        } catch (Exception e) {
+//            System.out.println("DEBUG: Error during checkout: " + e.getMessage());
+//            System.out.println("DEBUG: Current URL: " + driver.getCurrentUrl());
+//            throw e;
+//        }
+//    }
+//}
 
 
 
