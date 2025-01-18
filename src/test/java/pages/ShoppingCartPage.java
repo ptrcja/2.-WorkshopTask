@@ -34,53 +34,5 @@ public class ShoppingCartPage {
     }
 }
 
-//import org.openqa.selenium.WebDriver;
-//import org.openqa.selenium.WebElement;
-//import org.openqa.selenium.support.FindBy;
-//import org.openqa.selenium.support.PageFactory;
-//
-//public class ShoppingCartPage {
-//    private WebDriver driver;
-//
-//    @FindBy(css = ".cart-summary-line.cart-total .value")
-//    private WebElement totalAmount;
-//
-//    @FindBy(css = "a.btn.btn-primary[href*='order']")
-//    private WebElement proceedToCheckoutButton;
-//
-//    @FindBy(css = "input.js-cart-line-product-quantity")
-//    private WebElement productQuantity;
-//
-//    @FindBy(css = ".product-line-info .value")
-//    private WebElement productSize;
-//
-//    public ShoppingCartPage(WebDriver driver) {
-//        this.driver = driver;
-//        PageFactory.initElements(driver, this);
-//    }
-//
-//    public String getTotalAmount() {
-//        return totalAmount.getText();
-//    }
-//right one below
-//    public void proceedToCheckout() {
-//        proceedToCheckoutButton.click();
-//
-//    delete
-//    public void proceedToCheckout() {
-//        System.out.println("DEBUG: Starting checkout process");
-//        System.out.println("DEBUG: Current URL before checkout: " + driver.getCurrentUrl());
-//        proceedToCheckoutButton.click();
-//        System.out.println("DEBUG: Current URL after checkout: " + driver.getCurrentUrl());
-//    }
-//
-//    public String getProductQuantity() {
-//        return productQuantity.getAttribute("value");
-//    }
-//
-//    public String getProductSize() {
-//        return productSize.getText();
-//    }
-//
-//
-//    }
+
+
