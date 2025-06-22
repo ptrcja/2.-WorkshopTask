@@ -18,9 +18,13 @@ Feature: Purchase Hummingbird Printed Sweater
 
     Examples:
 
-    | email |       password | size | quantity |
-    |bla@gmail.com| blabla123| M    |  5       |
-    |bla@gmail.com| blabla123| L    |  3       |
-    |bla@gmail.com| blabla123| XL   |  2       |
+    | email       |  password        | size | quantity |
+
+    |bla@gmail.com| testingtesting&*(| XL   |  2       |
+    |bla@gmail.com| testingtesting&*(| L    |  3       |
+    |bla@gmail.com| testingtesting&*(| M    |  5       |
+
+
+
 
 
