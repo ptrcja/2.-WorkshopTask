@@ -59,6 +59,10 @@ Think of it like a very fast, tireless employee who:
 
 The system automatically takes screenshots of successful orders, providing visual confirmation that everything works correctly.
 
+
+https://github.com/user-attachments/assets/ff23c1c0-2ca1-4de7-97c6-a5d76e378344
+
+
 ## Running the Tests
 
 ```bash
